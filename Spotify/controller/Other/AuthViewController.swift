@@ -52,12 +52,12 @@ class AuthViewController: UIViewController, WKNavigationDelegate {
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         
         // get the url was opened in webview
-        guard let url = webView.url else {
+        guard let url = webView.url  else {
             return
         }
         
     // get the code value from URL
-       let component = URLComponents(string: url.absoluteString)
+        let component = URLComponents(string: url.absoluteString)
         guard let code = component?.queryItems?.first(where: { $0.name == "code"})?.value else{
             return
         }

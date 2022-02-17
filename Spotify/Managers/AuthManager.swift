@@ -16,8 +16,8 @@ final class AuthManager{
     //MARK: - Constants URls
     struct Constants{
         
-        static let ClientId = "d1a05f2a85d5430ebde2d6cc164e8566"
-        static let clientSecret = "3db117f130ac41ba8975a59f0ae649f3"
+        static let ClientId = "7fb70e0147fc4849932733c833e29a8c"
+        static let clientSecret = "0476149d8326485887b41511a05aecf1"
         static let scopes = "user-read-private%20playlist-modify-public%20playlist-read-private%20playlist-modify-private%20user-follow-read%20user-library-modify%20user-library-read%20user-read-email"
         static let redirectURI = "https://iosacademy.io"
         static let tokenApiurl = "https://accounts.spotify.com/api/token"
