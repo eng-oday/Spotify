@@ -45,7 +45,7 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
     private func FetchUserData(){
         
         APIcaller.shared.getCurrentUserProfile { [weak self] result in
-            
+
             DispatchQueue.main.async {
                 switch result
                 {
@@ -58,6 +58,8 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
                }
             }
         }
+
+        
     }
     
     
@@ -75,8 +77,7 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
         models.append("product: \(model.product)")
         CreateTableHeader(with: model.images.first?.url)
 
-        
-        tableView.reloadData()
+                tableView.reloadData()
         
     }
     

@@ -16,8 +16,14 @@ final class AuthManager{
     //MARK: - Constants URls
     struct Constants{
         
+        //oday account
         static let ClientId = "7fb70e0147fc4849932733c833e29a8c"
         static let clientSecret = "0476149d8326485887b41511a05aecf1"
+        
+        //not today account
+//        static let ClientId = "743e9406538e461aa6226b966048013c"
+//        static let clientSecret = "c8c8ab63d72747f2bf3d19c33103bb8e"
+//
         static let scopes = "user-read-private%20playlist-modify-public%20playlist-read-private%20playlist-modify-private%20user-follow-read%20user-library-modify%20user-library-read%20user-read-email"
         static let redirectURI = "https://iosacademy.io"
         static let tokenApiurl = "https://accounts.spotify.com/api/token"
@@ -126,8 +132,7 @@ final class AuthManager{
     
     }
     
-    
-    //MARK: - Refresh Token After Expired
+        //MARK: - Refresh Token After Expired
     
     private var onRefreshBlocks = [((String)->Void)]()
     
@@ -157,9 +162,7 @@ final class AuthManager{
     }
     
     
-    
-    
-    public func RefreshIfNeeded(completion: @escaping (Bool)-> Void){
+    public func RefreshIfNeeded(completion:((Bool)-> Void)?){
     
         guard !RefreshingToken else{
             return
@@ -167,7 +170,7 @@ final class AuthManager{
         
        //  if return true thats mean not needed to refresh
         guard shouldRefreshToken else{
-            completion(true)
+            completion?(true)
             return
         }
         
@@ -198,7 +201,7 @@ final class AuthManager{
                 let data = basicToken.data(using: .utf8)
                 guard let base46String = data?.base64EncodedString() else {
                     print("failure To get base46")
-                    completion(false)
+                    completion?(false)
                     return
                 }
                 Request.setValue("Basic \(base46String)", forHTTPHeaderField: "Authorization")
@@ -206,7 +209,7 @@ final class AuthManager{
                 let task = URLSession.shared.dataTask(with: Request) {[weak self] data,_, error in
                     self?.RefreshingToken = false
                     guard let data = data , error == nil else {
-                        completion(false)
+                        completion?(false)
                         return
                     }
                     do{
@@ -216,7 +219,7 @@ final class AuthManager{
                         self?.onRefreshBlocks.removeAll()
                         self?.casheToken(result: result)
                     }catch{
-                        completion(false)
+                        completion?(false)
                         print("error\(error.localizedDescription)")
                     }
                     
@@ -226,8 +229,6 @@ final class AuthManager{
         
         }
         
-    
-    
     //MARK: - Cashing the Response Of Tokens Request
     
     public func casheToken(result: AuthResponse){

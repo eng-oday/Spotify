@@ -9,6 +9,8 @@ import Foundation
 
 struct Section{
     let title:String
+    
+    //the cells'buttons' inside sections
     let options:[Option]
 }
 

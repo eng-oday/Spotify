@@ -13,7 +13,7 @@ class SettingViewController: UIViewController , UITableViewDelegate, UITableView
 
     private let tableView: UITableView = {
         
-        let tableView = UITableView(frame: .zero, style: .grouped)
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         return tableView
         
@@ -92,6 +92,7 @@ class SettingViewController: UIViewController , UITableViewDelegate, UITableView
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // model is -> index path for section then index path for option to get data for this cell "option"
         let model = sections[indexPath.section].options[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = model.title
@@ -100,9 +101,10 @@ class SettingViewController: UIViewController , UITableViewDelegate, UITableView
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
         // call handler For cell
         let model = sections[indexPath.section].options[indexPath.row]
-        model.handler()
+          model.handler()
 
     }
     

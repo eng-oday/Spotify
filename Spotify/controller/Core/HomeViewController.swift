@@ -19,8 +19,43 @@ class HomeViewController: UIViewController {
                                                             target: self,
                                                             action: #selector(didTapSettings))
 
+        
+        
+        Fetchdata()
     }
 
+    
+    
+    
+    
+    private func Fetchdata(){
+        
+        APIcaller.shared.GetGenreRecomendations(completion: { result in
+            
+            switch result {
+                
+            case.success(let data):
+                let genres = data.genres
+                var seeds = [String]()
+                while seeds.count < 5 {
+                    if let random = genres.randomElement(){
+                        seeds.append(random)
+
+                    }
+                }
+                APIcaller.shared.GetRecomendations(geners: seeds) { _ in
+                    
+                    print("am hereeeeeee")
+                }
+                
+                
+            case.failure(let error): break
+                
+            }
+            
+        })
+        
+    }
     
     @objc func didTapSettings(){
         

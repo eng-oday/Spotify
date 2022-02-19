@@ -20,6 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if AuthManager.Shared.isSignedIn {
             
             window.rootViewController = TabBarViewController()
+            AuthManager.Shared.RefreshIfNeeded(completion: nil)
         }else{
             
             window.rootViewController = UINavigationController(rootViewController: WelcomeViewController())

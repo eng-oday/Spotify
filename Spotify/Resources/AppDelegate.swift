@@ -18,6 +18,7 @@ var  window: UIWindow?
         let window = UIWindow(frame: UIScreen.main.bounds)
         if AuthManager.Shared.isSignedIn {
             window.rootViewController = TabBarViewController()
+            AuthManager.Shared.RefreshIfNeeded(completion: nil)
         }else{
             window.rootViewController = UINavigationController(rootViewController: WelcomeViewController())
         }
