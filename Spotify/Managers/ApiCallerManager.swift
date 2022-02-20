@@ -29,7 +29,7 @@ final class APIcaller {
     private init(){}
     
     
-    //MARK: - Generic func to Create Request
+    //MARK: - Generic func Used IN API
     
     private func CreateRequest(url: URL? ,
                                Type: httpMethod,
@@ -51,31 +51,48 @@ final class APIcaller {
         
     }
     
+    //  generic decode func by me 
+    
+    private func CreateTaskAndDecodeData<T>(request:URLRequest,ModelType:T.Type,completion: @escaping((Result<T,Error>))->Void) where T : Codable{
+
+        let task = URLSession.shared.dataTask(with: request) { data, _, error in
+
+            guard let data = data , error == nil else{
+                completion(.failure(APiError.failedTogetData))
+                return
+            }
+            do{
+                let result = try JSONDecoder().decode(ModelType , from: data)
+               completion(.success(result))
+
+            }catch{
+                completion(.failure(error))
+            }
+        }
+        task.resume()
+
+    }
+    
     //MARK: - API Funcs
     
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfile, Error>)->Void){
         
         CreateRequest(url: URL(string: Constants.baseApiUrl + "/me"),
                       Type: .GET)
-        { baseRequest in
+        { request in
             
-            let task = URLSession.shared.dataTask(with: baseRequest) { data, _, error in
+            
+            
+            self.CreateTaskAndDecodeData(request: request, ModelType: UserProfile.self) { result in
                 
-                guard let data = data , error == nil else{
-                    completion(.failure(APiError.failedTogetData))
-                    return
+                switch result{
+                case .success(let data):
+                    completion(.success(data))
+                case.failure(let error):
+                    completion(.failure(error))
                 }
-                do{
-                    let result = try JSONDecoder().decode(UserProfile.self, from: data)
-                    completion(.success(result))
-                    
-                }catch{
-                    print(error.localizedDescription)
-                    completion(.failure(error))                    
-                }
+                
             }
-            task.resume()
-            
             
         }
         
@@ -85,24 +102,22 @@ final class APIcaller {
     public func GetNewRelases (completion: @escaping ((Result<NewRelasesResponse,Error>)) -> Void){
         
         CreateRequest(url: URL(string: Constants.baseApiUrl + "/browse/new-releases?limit=50"), Type: .GET) { request in
+//
             
-            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+            
+            
+            
+            self.CreateTaskAndDecodeData(request: request, ModelType: NewRelasesResponse.self) { result in
                 
-                guard let data = data , error == nil else{
-                    completion(.failure(APiError.failedTogetData))
-                    return
-                }
-                do{
-                    let result = try JSONDecoder().decode(NewRelasesResponse.self, from: data)
-                    completion(.success(result))
-                    
-                }catch{
+                switch result{
+                case .success(let data):
+                    completion(.success(data))
+                case.failure(let error):
                     completion(.failure(error))
-                    print("error to get new relases")
-                    
                 }
+                
             }
-            task.resume()
+
         }
         
     }
@@ -112,22 +127,19 @@ final class APIcaller {
         
         CreateRequest(url: URL(string: Constants.baseApiUrl + "/browse/featured-playlists?limit=50"), Type: .GET) { request in
             
-            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+            
+            
+            self.CreateTaskAndDecodeData(request: request, ModelType: FeaturedPlayListResponse.self) { result in
                 
-                guard let data = data , error == nil else{
-                    completion(.failure(APiError.failedTogetData))
-                    return
-                }
-                do{
-                    let result = try  JSONDecoder().decode(FeaturedPlayListResponse.self, from: data)
-              completion(.success(result))
-                }catch{
+                switch result{
+                case .success(let data):
+                    completion(.success(data))
+                case.failure(let error):
                     completion(.failure(error))
-                    print("error to get featured albums")
-                    
                 }
+                
             }
-            task.resume()
+    
         }
     }
     
@@ -136,23 +148,18 @@ final class APIcaller {
         
         CreateRequest(url: URL(string: Constants.baseApiUrl + "/recommendations/available-genre-seeds?limit=50"), Type: .GET) { request in
             
-            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+            
+            self.CreateTaskAndDecodeData(request: request, ModelType: RecomndedGenresResponse.self) { result in
                 
-                guard let data = data , error == nil else{
-                    completion(.failure(APiError.failedTogetData))
-                    return
-                }
-                do{
-                    let result = try  JSONDecoder().decode(RecomndedGenresResponse.self, from: data)
-                    completion(.success(result))
-
-                }catch{
+                switch result{
+                case .success(let data):
+                    completion(.success(data))
+                case.failure(let error):
                     completion(.failure(error))
-                    print("error to get featured albums")
-                    
                 }
+                
             }
-            task.resume()
+
         }
     }
     
@@ -160,58 +167,46 @@ final class APIcaller {
         
       let seeds = geners.joined(separator: ",")
         
-        
-        
         CreateRequest(url: URL(string: Constants.baseApiUrl + "/recommendations?limit=1&seed_genres=\(seeds)"), Type: .GET) { request in
-            
-            let task = URLSession.shared.dataTask(with: request) { data, _, error in
-
-                guard let data = data , error == nil else{
-                    completion(.failure(APiError.failedTogetData))
-                    return
-                }
-                do{
-                    let result = try JSONDecoder().decode(RecomendationsResponse.self, from: data)
-                   completion(.success(result))
-
-                }catch{
+                        
+            self.CreateTaskAndDecodeData(request: request, ModelType: RecomendationsResponse.self) { result in
+                
+                switch result{
+                case .success(let data):
+                    completion(.success(data))
+                case.failure(let error):
                     completion(.failure(error))
-                    print("error to get featured albums")
-
                 }
+                
             }
-            task.resume()
+            
         }
     }
-    
-    
- 
-    // try to get generic decode func
-    
-//    private func Test<T>(request:URLRequest,ModelType:T.Type,completion: @escaping((Result<Any,Error>))->Void) where T : Codable{
-//
-//        let task = URLSession.shared.dataTask(with: request) { data, _, error in
-//
-//            guard let data = data , error == nil else{
-//                completion(.failure(APiError.failedTogetData))
-//                return
-//            }
-//            do{
-//                let result = try JSONDecoder().decode(ModelType , from: data)
-//               completion(.success(result))
-//
-//            }catch{
-//                completion(.failure(error))
-//                print("error to get featured albums")
-//
-//            }
-//        }
-//        task.resume()
-//
-//    }
-//
-    
-    
-    
-    
 }
+
+//MARK: - old Code before create generic func to decode
+
+// repeat this code in every API request only the change is model type xxxxxxxx
+
+//CreateRequest(url: URL(string: Constants.baseApiUrl + "/recommendations?limit=1&seed_genres=\(seeds)"), Type: .GET) { request in
+//
+//                    let task = URLSession.shared.dataTask(with: request) { data, _, error in
+//
+//                        guard let data = data , error == nil else{
+//                            completion(.failure(APiError.failedTogetData))
+//                            return
+//                        }
+//                        do{
+//                            let result = try JSONDecoder().decode(RecomendationsResponse.self, from: data)
+//                           completion(.success(result))
+//
+//                        }catch{
+//                            completion(.failure(error))
+//                            print("error to get featured albums")
+//
+//                        }
+//                    }
+//                    task.resume()
+//
+//}
+
