@@ -10,12 +10,14 @@ import SDWebImage
 
 class NewRelasesCollectionViewCell: UICollectionViewCell {
     static let identifier = "NewRelasesCollectionViewCell"
-    
+     
     
     private let albumCoverImageView:UIImageView = {
        
         let imagview = UIImageView()
         imagview.image = UIImage(systemName: "photo")
+        imagview.layer.masksToBounds = true
+        imagview.layer.cornerRadius = 8
         imagview.contentMode = .scaleAspectFill
         return imagview
         
@@ -53,8 +55,6 @@ class NewRelasesCollectionViewCell: UICollectionViewCell {
         contentView.clipsToBounds = true
         contentView.addSubview(numberOfTracksLabel)
 
-        
-        
     }
     
     required init?(coder: NSCoder) {
@@ -68,6 +68,7 @@ class NewRelasesCollectionViewCell: UICollectionViewCell {
       //  let albumNameLabelSize = albumNameLabel.sizeThatFits(CGSize(width: contentView.width-imageSize-10, height: contentView.height-10))
         artistNameLabel.sizeToFit()
         numberOfTracksLabel.sizeToFit()
+        
         albumCoverImageView.frame = CGRect(x: 5, y: 5, width: imageSize, height: imageSize)
         
    //     let albumNameLabelHeight = min(50,albumNameLabelSize.height)

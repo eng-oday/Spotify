@@ -8,10 +8,9 @@
 import UIKit
 
 
-
 class HomeViewController: UIViewController {
 
-    
+     
     private let spinner: UIActivityIndicatorView = {
        
         let spinner = UIActivityIndicatorView()
@@ -54,7 +53,6 @@ class HomeViewController: UIViewController {
     
     private func  ConfigureCollectionView(){
         view.addSubview(collectioView)
-        
         // Register Collection View Cells
     
         collectioView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
@@ -152,13 +150,21 @@ class HomeViewController: UIViewController {
         //configure Models
         
         sections.append(.NewRelases(viewModel: newAlbums.compactMap({
-            return NewRealsesCellViewModel(name: $0.name,
-                                           artWorkURL: URL(string:$0.images.first?.url ?? "") ,
-                                           numberOfTracks: $0.total_tracks,
-                                           artistName: $0.artists.first?.name ?? "-")
+            return NewRealsesCellViewModel(name: $0.name, artWorkURL: URL(string: $0.images.first?.url ?? ""), numberOfTracks: $0.total_tracks, artistName: $0.artists.first?.name ?? "-")
+            
         })))
-        sections.append(.FeaturedPlayList(viewModel: []))
-        sections.append(.RecommendedTracks(viewModel: []))
+        
+        sections.append(.FeaturedPlayList(viewModel: playlist.compactMap({
+            
+            return FeaturedPlayListCellViewModel(artWorkURL:URL(string: $0.images.first?.url ?? ""), name: $0.name, CreatorName: $0.owner.display_name)
+        })))
+                
+        sections.append(.RecommendedTracks(viewModel: tracks.compactMap({
+            
+            return RecommentedTracksCellViewModel(trackImage: URL(string: $0.album.images.first?.url ?? ""),
+                                                  artistName: $0.artists.first?.name ?? "-",
+                                                  TrackName: $0.name)
+        })))
         
         collectioView.reloadData()
         
@@ -183,13 +189,13 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
     
     enum BrowseSectionType {
         case NewRelases(viewModel: [NewRealsesCellViewModel])
-        case FeaturedPlayList(viewModel: [NewRealsesCellViewModel])
-        case RecommendedTracks(viewModel: [NewRealsesCellViewModel])
+        case FeaturedPlayList(viewModel: [FeaturedPlayListCellViewModel])
+        case RecommendedTracks(viewModel: [RecommentedTracksCellViewModel])
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return sections.count
         
+        return sections.count
     }
     
     
@@ -222,19 +228,22 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
             
             let viewModel = viewModel[indexPath.row]
             cell.configure(with: viewModel)
-            cell.backgroundColor = .red
             return cell
+            
         case .FeaturedPlayList( let viewModel):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FeaturedPlayListCollectionViewCell.identifier, for: indexPath) as? FeaturedPlayListCollectionViewCell else{
                 return UICollectionViewCell()
             }
-            cell.backgroundColor = .blue
+            let viewModel = viewModel[indexPath.row]
+            cell.Configure(with: viewModel)
             return cell
+            
         case .RecommendedTracks(let viewModel):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecommendedTrackCollectionViewCell.identifier, for: indexPath) as? RecommendedTrackCollectionViewCell else{
                 return UICollectionViewCell()
             }
-            cell.backgroundColor = .green
+            let viewModel = viewModel[indexPath.row]
+            cell.Configure(with: viewModel)
             return cell
         }
     }
@@ -262,7 +271,7 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
             )
             let horizontalGroupSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(0.9),
-                heightDimension: .absolute(360)
+                heightDimension: .absolute(380)
             )
             //vertical group in horizontal group
             let verticalGroup = NSCollectionLayoutGroup.vertical( layoutSize: verticalGroupSize , subitem: item, count:3)
@@ -293,7 +302,7 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
   
             let horizontalGroupSize = NSCollectionLayoutSize(
                 widthDimension: .absolute(200),
-                heightDimension: .absolute(400)
+                heightDimension: .absolute(430)
             )
             
             let verticalGroup = NSCollectionLayoutGroup.vertical( layoutSize: verticalGroupSize , subitem: item, count:2)

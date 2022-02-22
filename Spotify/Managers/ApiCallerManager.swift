@@ -81,8 +81,6 @@ final class APIcaller {
                       Type: .GET)
         { request in
             
-            
-            
             self.CreateTaskAndDecodeData(request: request, ModelType: UserProfile.self) { result in
                 
                 switch result{
@@ -167,7 +165,7 @@ final class APIcaller {
         
       let seeds = geners.joined(separator: ",")
         
-        CreateRequest(url: URL(string: Constants.baseApiUrl + "/recommendations?limit=1&seed_genres=\(seeds)"), Type: .GET) { request in
+        CreateRequest(url: URL(string: Constants.baseApiUrl + "/recommendations?limit=15&seed_genres=\(seeds)"), Type: .GET) { request in
                         
             self.CreateTaskAndDecodeData(request: request, ModelType: RecomendationsResponse.self) { result in
                 

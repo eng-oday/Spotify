@@ -41,6 +41,8 @@
 		14E82AF627C1CCDE006AD5A7 /* RecommendedTrackCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E82AF527C1CCDE006AD5A7 /* RecommendedTrackCollectionViewCell.swift */; };
 		14E82AF827C1E24F006AD5A7 /* NewRealsesCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E82AF727C1E24F006AD5A7 /* NewRealsesCellViewModel.swift */; };
 		14F69BA427BE8A9500001036 /* SettingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F69BA327BE8A9500001036 /* SettingModels.swift */; };
+		14F6ADA127C463CA001F24A2 /* FetauredPlayListCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F6ADA027C463CA001F24A2 /* FetauredPlayListCellViewModel.swift */; };
+		14F6ADA327C47FAB001F24A2 /* RecommentedTracksCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F6ADA227C47FAB001F24A2 /* RecommentedTracksCellViewModel.swift */; };
 		B13AB30CADB5C6B0A64E44E4 /* Pods_Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A143FE137433A85B0D3D3C7 /* Pods_Spotify.framework */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +83,8 @@
 		14E82AF527C1CCDE006AD5A7 /* RecommendedTrackCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedTrackCollectionViewCell.swift; sourceTree = "<group>"; };
 		14E82AF727C1E24F006AD5A7 /* NewRealsesCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRealsesCellViewModel.swift; sourceTree = "<group>"; };
 		14F69BA327BE8A9500001036 /* SettingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModels.swift; sourceTree = "<group>"; };
+		14F6ADA027C463CA001F24A2 /* FetauredPlayListCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetauredPlayListCellViewModel.swift; sourceTree = "<group>"; };
+		14F6ADA227C47FAB001F24A2 /* RecommentedTracksCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommentedTracksCellViewModel.swift; sourceTree = "<group>"; };
 		3A143FE137433A85B0D3D3C7 /* Pods_Spotify.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Spotify.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6083D56825342CD412BE0BE1 /* Pods-Spotify.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Spotify.debug.xcconfig"; path = "Target Support Files/Pods-Spotify/Pods-Spotify.debug.xcconfig"; sourceTree = "<group>"; };
 		87DF1304BC929D7BECA95F26 /* Pods-Spotify.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Spotify.release.xcconfig"; path = "Target Support Files/Pods-Spotify/Pods-Spotify.release.xcconfig"; sourceTree = "<group>"; };
@@ -170,6 +174,8 @@
 			isa = PBXGroup;
 			children = (
 				14E82AF727C1E24F006AD5A7 /* NewRealsesCellViewModel.swift */,
+				14F6ADA027C463CA001F24A2 /* FetauredPlayListCellViewModel.swift */,
+				14F6ADA227C47FAB001F24A2 /* RecommentedTracksCellViewModel.swift */,
 			);
 			path = "View Model";
 			sourceTree = "<group>";
@@ -364,6 +370,7 @@
 				14E82AF427C1CCAD006AD5A7 /* FeaturedPlayListCollectionViewCell.swift in Sources */,
 				149EFDD227BAE0A400B8D4A4 /* WelcomeViewController.swift in Sources */,
 				149EFDCA27BADFFA00B8D4A4 /* SearchViewController.swift in Sources */,
+				14F6ADA127C463CA001F24A2 /* FetauredPlayListCellViewModel.swift in Sources */,
 				14E82AEB27C04E79006AD5A7 /* FeaturedPlayListResponse.swift in Sources */,
 				149EFDEA27BAE31100B8D4A4 /* UserProfile.swift in Sources */,
 				149EFDAD27BABFA800B8D4A4 /* HomeViewController.swift in Sources */,
@@ -392,6 +399,7 @@
 				14E82AEF27C06403006AD5A7 /* RecomendationsResponse.swift in Sources */,
 				14E82AF827C1E24F006AD5A7 /* NewRealsesCellViewModel.swift in Sources */,
 				14F69BA427BE8A9500001036 /* SettingModels.swift in Sources */,
+				14F6ADA327C47FAB001F24A2 /* RecommentedTracksCellViewModel.swift in Sources */,
 				14E82AED27C055FF006AD5A7 /* RecomndedGenresResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
