@@ -73,8 +73,53 @@ final class APIcaller {
 
     }
     
-    //MARK: - API Funcs
     
+    //MARK: - Album
+    
+    public func GetAlbumDetails(album:Album , completion : @escaping (Result<AlbumDetailsResponse,Error>)->Void){
+        
+        CreateRequest(url: URL(string: Constants.baseApiUrl + "/albums/" + album.id), Type: .GET) { request in
+            
+            self.CreateTaskAndDecodeData(request: request, ModelType: AlbumDetailsResponse.self) { result in
+
+                switch result{
+                case .success(let data):
+                    completion(.success(data))
+                case.failure(let error):
+                    completion(.failure(error))
+                }
+
+            }
+ 
+            
+ 
+        }
+        
+        
+    }
+    //MARK: - Playlist
+    public func GetAlbumDetails(playList:PlayList , completion : @escaping (Result<PlayListDetailsResponse,Error>)->Void){
+        
+        CreateRequest(url: URL(string: Constants.baseApiUrl + "/playlists/" + playList.id), Type: .GET) { request in
+            
+            self.CreateTaskAndDecodeData(request: request, ModelType: PlayListDetailsResponse.self) { result in
+
+                switch result{
+                case .success(let data):
+                    completion(.success(data))
+                case.failure(let error):
+                    completion(.failure(error))
+                }
+
+            }
+
+ 
+        }
+        
+        
+    }
+        
+    //MARK: - get user profile
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfile, Error>)->Void){
         
         CreateRequest(url: URL(string: Constants.baseApiUrl + "/me"),
@@ -95,6 +140,8 @@ final class APIcaller {
         }
         
     }
+    
+    //MARK: - Browse Home Api
     
     
     public func GetNewRelases (completion: @escaping ((Result<NewRelasesResponse,Error>)) -> Void){
@@ -181,6 +228,12 @@ final class APIcaller {
         }
     }
 }
+
+
+
+
+
+
 
 //MARK: - old Code before create generic func to decode
 

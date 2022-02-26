@@ -21,9 +21,13 @@ class HomeViewController: UIViewController {
     
     private var sections = [BrowseSectionType]()
     
+    private var newAlbums:[Album] = []
+    private var playlist: [PlayList] = []
+    private var tracks: [AudioTracks] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Home"
+        title = "Browse"
         view.backgroundColor = .systemBackground
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "gear"),
@@ -59,6 +63,10 @@ class HomeViewController: UIViewController {
         collectioView.register(NewRelasesCollectionViewCell.self, forCellWithReuseIdentifier: NewRelasesCollectionViewCell.identifier)
         collectioView.register(FeaturedPlayListCollectionViewCell.self, forCellWithReuseIdentifier: FeaturedPlayListCollectionViewCell.identifier)
         collectioView.register(RecommendedTrackCollectionViewCell.self, forCellWithReuseIdentifier: RecommendedTrackCollectionViewCell.identifier)
+        collectioView.register(
+            TittleHeaderCollectionReusableView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: TittleHeaderCollectionReusableView.identifier)
 
         
         collectioView.dataSource = self
@@ -146,8 +154,14 @@ class HomeViewController: UIViewController {
         }
     }
     
+   
+    
     private func configureModels(newAlbums: [Album] ,playlist: [PlayList], tracks: [AudioTracks] ){
         //configure Models
+        
+        self.newAlbums = newAlbums
+        self.playlist = playlist
+        self.tracks = tracks
         
         sections.append(.NewRelases(viewModel: newAlbums.compactMap({
             return NewRealsesCellViewModel(name: $0.name, artWorkURL: URL(string: $0.images.first?.url ?? ""), numberOfTracks: $0.total_tracks, artistName: $0.artists.first?.name ?? "-")
@@ -161,7 +175,7 @@ class HomeViewController: UIViewController {
                 
         sections.append(.RecommendedTracks(viewModel: tracks.compactMap({
             
-            return RecommentedTracksCellViewModel(trackImage: URL(string: $0.album.images.first?.url ?? ""),
+            return RecommentedTracksCellViewModel(trackImage: URL(string: $0.album?.images.first?.url ?? ""),
                                                   artistName: $0.artists.first?.name ?? "-",
                                                   TrackName: $0.name)
         })))
@@ -191,6 +205,21 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
         case NewRelases(viewModel: [NewRealsesCellViewModel])
         case FeaturedPlayList(viewModel: [FeaturedPlayListCellViewModel])
         case RecommendedTracks(viewModel: [RecommentedTracksCellViewModel])
+        
+        
+        var title:String{
+            
+            switch self{
+                
+            case .NewRelases:
+                return"New Realsed Albums"
+            case .FeaturedPlayList:
+                return "Fetaured PlayList"
+            case .RecommendedTracks:
+                return "Recommended"
+            }
+            
+        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -248,8 +277,67 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
         }
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let section = sections[indexPath.section]
+        
+        switch section {
+        case .NewRelases:
+            let album = newAlbums[indexPath.row]
+            let vc = AlbumViewController(album: album)
+            vc.title = album.name
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+       
+        case .FeaturedPlayList:
+            
+            let playlist = playlist[indexPath.row]
+            let vc = PlayListViewController(playlist: playlist)
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+           
+        case .RecommendedTracks:
+            break
+            
+        }
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let header = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind ,
+            withReuseIdentifier: TittleHeaderCollectionReusableView.identifier,
+            for: indexPath
+        )  as? TittleHeaderCollectionReusableView ,
+                kind == UICollectionView.elementKindSectionHeader
+        else{
+            return UICollectionReusableView()
+        }
+        
+        let section = indexPath.section
+        let title = sections[section].title
+        
+        header.configure(with:title)
+        return header
+    }
+    
+    
+    //MARK: -  create section
      static func CreateSectionLayout(section:Int) -> NSCollectionLayoutSection
     {
+        //headerview
+        let supplementaryView  = [
+            NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .absolute(50)
+            ),
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+            )
+        ]
+        
 
         switch section{
         case 0 :
@@ -282,6 +370,7 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
             //section
             let section = NSCollectionLayoutSection(group: horizontalGroup)
             section.orthogonalScrollingBehavior = .groupPaging
+            section.boundarySupplementaryItems = supplementaryView
             return section
             
         case 1:
@@ -313,6 +402,8 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
             //section
             let section = NSCollectionLayoutSection(group: horizontalGroup)
             section.orthogonalScrollingBehavior = .continuous
+            section.boundarySupplementaryItems = supplementaryView
+
             return section
             
         case 2:
@@ -337,6 +428,8 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
             
             //section
             let section = NSCollectionLayoutSection(group: group)
+            section.boundarySupplementaryItems = supplementaryView
+
             return section
 
         default:
@@ -360,6 +453,8 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
             
             //section
             let section = NSCollectionLayoutSection(group: group)
+            section.boundarySupplementaryItems = supplementaryView
+
             return section
             
         }

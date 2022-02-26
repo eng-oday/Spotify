@@ -1,41 +1,43 @@
 //
-//  RecommendedTrackCollectionViewCell.swift
+//  AlbumTracksCollectionViewCell.swift
 //  Spotify
 //
-//  Created by Oday Dieg on 20/02/2022.
+//  Created by Oday Dieg on 26/02/2022.
 //
 
+import Foundation
 import UIKit
-import SDWebImage
 
-class RecommendedTrackCollectionViewCell: UICollectionViewCell {
+class AlbumTrackCollectionViewCell: UICollectionViewCell {
     
-    static let identifier = "RecommendedTrackCollectionViewCell"
+    static let identifier = "AlbumTrackCollectionViewCell"
     
-    
-    private let imageOfTrack:UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "photo")
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 8
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
-    
+
     private let trackLabel:UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.font = .systemFont(ofSize: 18, weight: .regular)
+        //label.backgroundColor = .red
      
         return label
         
     }()
+    private let trackNumberLabel:UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.font = .systemFont(ofSize: 18, weight: .semibold)
+     
+        return label
+        
+    }()
+
     
     private let artitstNameLabel:UILabel = {
        
         let label = UILabel()
         label.numberOfLines = 0
         label.font = .systemFont(ofSize: 15, weight: .thin)
+       // label.backgroundColor = .green
       
         return label
         
@@ -45,9 +47,10 @@ class RecommendedTrackCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect){
         super.init(frame: frame)
         contentView.backgroundColor = .secondarySystemBackground
-        contentView.addSubview(imageOfTrack)
         contentView.addSubview(trackLabel)
+        contentView.addSubview(trackNumberLabel)
         contentView.addSubview(artitstNameLabel)
+        
         contentView.clipsToBounds = true
         
     }
@@ -61,23 +64,29 @@ class RecommendedTrackCollectionViewCell: UICollectionViewCell {
         super.layoutSubviews()
         
        // constraints
-        trackLabel.sizeToFit()
-        artitstNameLabel.sizeToFit()
+       // trackLabel.sizeToFit()
+       // artitstNameLabel.sizeToFit()
 
-        let imageSize = contentView.height - 5
-        imageOfTrack.frame = CGRect(x: 5, y: 5, width: imageSize, height: imageSize)
+
         
-        trackLabel.frame = CGRect(
-            x: imageOfTrack.right + 10 ,
-            y: 0,
-            width: contentView.width - imageOfTrack.right - 15,
+        trackNumberLabel.frame = CGRect(
+            x:  20 ,
+            y: 15,
+            width: 30,
             height: contentView.height / 2
         )
+        
+        trackLabel.frame = CGRect(
+            x:  trackNumberLabel.right + 10 ,
+            y: 0,
+            width: contentView.width - trackNumberLabel.width,
+            height: (contentView.height / 1.5) - 10
+        )
         artitstNameLabel.frame = CGRect(
-            x: imageOfTrack.right + 10 ,
-            y: contentView.height / 2,
-            width: contentView.width - imageOfTrack.right-15 ,
-            height: contentView.height / 2
+            x: trackNumberLabel.right + 10 ,
+            y: trackLabel.Bottom,
+            width: contentView.width - 15 ,
+            height: contentView.height - trackLabel.height
         )
     
         
@@ -85,17 +94,17 @@ class RecommendedTrackCollectionViewCell: UICollectionViewCell {
     }
     
     override func prepareForReuse(){
-        imageOfTrack.image = nil
         trackLabel.text = nil
         artitstNameLabel.text = nil
+        trackNumberLabel.text = nil
         
         
     }
     
-    func Configure(with viewModel:RecommentedTracksCellViewModel ){
-        imageOfTrack.sd_setImage(with: viewModel.trackImage, completed: nil)
+    func Configure(with viewModel:AlbumCollectionViewCellViewModel , number: Int ){
         trackLabel.text = viewModel.TrackName
         artitstNameLabel.text = viewModel.artistName
+        trackNumberLabel.text =  String(number)
     }
     
     
