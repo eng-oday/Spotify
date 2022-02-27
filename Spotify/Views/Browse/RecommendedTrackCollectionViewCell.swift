@@ -16,8 +16,8 @@ class RecommendedTrackCollectionViewCell: UICollectionViewCell {
     private let imageOfTrack:UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "photo")
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 8
+//        imageView.layer.masksToBounds = true
+//        imageView.layer.cornerRadius = 8
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
@@ -49,6 +49,8 @@ class RecommendedTrackCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(trackLabel)
         contentView.addSubview(artitstNameLabel)
         contentView.clipsToBounds = true
+        contentView.layer.cornerRadius = 8
+        contentView.layer.masksToBounds = true
         
     }
     
@@ -65,7 +67,7 @@ class RecommendedTrackCollectionViewCell: UICollectionViewCell {
         artitstNameLabel.sizeToFit()
 
         let imageSize = contentView.height - 5
-        imageOfTrack.frame = CGRect(x: 5, y: 5, width: imageSize, height: imageSize)
+        imageOfTrack.frame = CGRect(x: 0, y: 0, width: imageSize, height: imageSize)
         
         trackLabel.frame = CGRect(
             x: imageOfTrack.right + 10 ,

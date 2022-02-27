@@ -11,7 +11,7 @@ final class APIcaller {
     
     //MARK: - Main
     static let shared = APIcaller()
-
+    
     struct Constants {
         static let baseApiUrl = "https://api.spotify.com/v1"
     }
@@ -21,7 +21,7 @@ final class APIcaller {
         case GET
         case POST
     }
-  
+    
     enum APiError: Error {
         case failedTogetData
     }
@@ -47,30 +47,30 @@ final class APIcaller {
             Request.timeoutInterval = 30
             completion(Request)
             
-                    }
+        }
         
     }
     
-    //  generic decode func by me 
+    //  generic decode func by me
     
     private func CreateTaskAndDecodeData<T>(request:URLRequest,ModelType:T.Type,completion: @escaping((Result<T,Error>))->Void) where T : Codable{
-
+        
         let task = URLSession.shared.dataTask(with: request) { data, _, error in
-
+            
             guard let data = data , error == nil else{
                 completion(.failure(APiError.failedTogetData))
                 return
             }
             do{
                 let result = try JSONDecoder().decode(ModelType , from: data)
-               completion(.success(result))
-
+                completion(.success(result))
+                
             }catch{
                 completion(.failure(error))
             }
         }
         task.resume()
-
+        
     }
     
     
@@ -81,18 +81,18 @@ final class APIcaller {
         CreateRequest(url: URL(string: Constants.baseApiUrl + "/albums/" + album.id), Type: .GET) { request in
             
             self.CreateTaskAndDecodeData(request: request, ModelType: AlbumDetailsResponse.self) { result in
-
+                
                 switch result{
                 case .success(let data):
                     completion(.success(data))
                 case.failure(let error):
                     completion(.failure(error))
                 }
-
+                
             }
- 
             
- 
+            
+            
         }
         
         
@@ -103,22 +103,22 @@ final class APIcaller {
         CreateRequest(url: URL(string: Constants.baseApiUrl + "/playlists/" + playList.id), Type: .GET) { request in
             
             self.CreateTaskAndDecodeData(request: request, ModelType: PlayListDetailsResponse.self) { result in
-
+                
                 switch result{
                 case .success(let data):
                     completion(.success(data))
                 case.failure(let error):
                     completion(.failure(error))
                 }
-
+                
             }
-
- 
+            
+            
         }
         
         
     }
-        
+    
     //MARK: - get user profile
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfile, Error>)->Void){
         
@@ -147,7 +147,7 @@ final class APIcaller {
     public func GetNewRelases (completion: @escaping ((Result<NewRelasesResponse,Error>)) -> Void){
         
         CreateRequest(url: URL(string: Constants.baseApiUrl + "/browse/new-releases?limit=50"), Type: .GET) { request in
-//
+            //
             
             
             
@@ -162,7 +162,7 @@ final class APIcaller {
                 }
                 
             }
-
+            
         }
         
     }
@@ -184,7 +184,7 @@ final class APIcaller {
                 }
                 
             }
-    
+            
         }
     }
     
@@ -204,16 +204,16 @@ final class APIcaller {
                 }
                 
             }
-
+            
         }
     }
     
     public func GetRecomendations(geners:[String] , completion: @escaping((Result<RecomendationsResponse,Error>))->Void){
         
-      let seeds = geners.joined(separator: ",")
+        let seeds = geners.joined(separator: ",")
         
         CreateRequest(url: URL(string: Constants.baseApiUrl + "/recommendations?limit=15&seed_genres=\(seeds)"), Type: .GET) { request in
-                        
+            
             self.CreateTaskAndDecodeData(request: request, ModelType: RecomendationsResponse.self) { result in
                 
                 switch result{
@@ -227,11 +227,60 @@ final class APIcaller {
             
         }
     }
+    
+    
+    //MARK: -  Category
+    
+    
+    public func GetAllCategory(completion: @escaping (Result<[Category],Error>)->Void){
+        
+        
+        
+        CreateRequest(url: URL(string: Constants.baseApiUrl + "/browse/categories?limit=50"), Type: .GET) { request in
+            
+            self.CreateTaskAndDecodeData(request: request, ModelType: CategoryResponse.self) { result in
+                
+                switch result{
+                case .success(let data):
+                    completion(.success(data.categories.items))
+                case.failure(let error):
+                    completion(.failure(error))
+                }
+                
+            }
+            
+        }
+    }
+    //with categoryId:String,
+    
+    public func GetCategoryPlayListById( with category:Category,completion: @escaping (Result<[PlayList],Error>)->Void){
+        
+        
+        
+       CreateRequest(url: URL(string: Constants.baseApiUrl + "/browse/categories/\(category.id)/playlists?limit=50"), Type: .GET) { request in
+
+            self.CreateTaskAndDecodeData(request: request, ModelType: CategoryPlayListResponse.self) { result in
+
+                switch result{
+                case .success(let data):
+                    let playlist =  data.playlists.items
+                    print(playlist)
+                    completion(.success(playlist))
+                case.failure(let error):
+                    completion(.failure(error))
+                }
+
+            }
+
+        }
+
+        
+    }
+    
+    
+    
+    
 }
-
-
-
-
 
 
 
@@ -261,3 +310,21 @@ final class APIcaller {
 //
 //}
 
+// let task = URLSession.shared.dataTask(with: request) { data, _, error in
+//
+//                                 guard let data = data , error == nil else{
+//                                     completion(.failure(APiError.failedTogetData))
+//                                     return
+//                                 }
+//                                 do{
+//                                     let result = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
+//                                     print(result)
+//
+//                                 }catch{
+//                                     completion(.failure(error))
+//                                     print("error to get featured albums")
+//
+//                                 }
+//                             }
+//                             task.resume()
+//
