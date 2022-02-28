@@ -251,8 +251,6 @@ final class APIcaller {
             
         }
     }
-    //with categoryId:String,
-    
     public func GetCategoryPlayListById( with category:Category,completion: @escaping (Result<[PlayList],Error>)->Void){
         
         
@@ -277,6 +275,46 @@ final class APIcaller {
         
     }
     
+    //MARK: - seacrh
+    
+    public func Search(with query:String , completion : @escaping (Result<[SearchResult],Error> )-> Void){
+        
+        
+        let q = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        
+        CreateRequest(url: URL(string: Constants.baseApiUrl + "/search?limit=10&type=album,artist,playlist,track&q=\(q)"), Type: .GET) { request in
+            
+            print(request.url?.absoluteString ?? "")
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                
+                guard let data = data , error == nil else{
+                    completion(.failure(APiError.failedTogetData))
+                    return
+                }
+                do{
+                    let result = try JSONDecoder().decode(SearchResultResponse.self , from: data)
+                        
+                    
+                    var searchResult:[SearchResult] = []
+                    searchResult.append(contentsOf: result.tracks.items.compactMap({ .track(model: $0) }))
+                    searchResult.append(contentsOf: result.albums.items.compactMap({ .album(model: $0) }))
+                    searchResult.append(contentsOf: result.artists.items.compactMap({ .artist(model: $0) }))
+                    searchResult.append(contentsOf: result.playlists.items.compactMap({ .playlist(model: $0) }))
+
+                    completion(.success(searchResult))
+                }catch{
+                    completion(.failure(error))
+                    print(error.localizedDescription)
+                    
+                }
+            }
+            task.resume()
+            
+            
+        }
+        
+        
+    }
     
     
     

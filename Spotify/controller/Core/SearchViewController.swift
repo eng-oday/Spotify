@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import SafariServices
 
-class SearchViewController: UIViewController , UISearchResultsUpdating {
+class SearchViewController: UIViewController , UISearchResultsUpdating, UISearchBarDelegate {
     
     
     
@@ -56,6 +57,7 @@ class SearchViewController: UIViewController , UISearchResultsUpdating {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
         view.addSubview(collectionView)
         collectionView.register(
@@ -91,20 +93,65 @@ class SearchViewController: UIViewController , UISearchResultsUpdating {
         collectionView.frame = view.bounds
     }
     
-    func updateSearchResults(for searchController: UISearchController) {
+    //call when press enter or search button
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         guard let resultController = searchController.searchResultsController as? SearchResultViewController ,
-              let query = searchController.searchBar.text ,
+              let query = searchBar.text ,
               !query.trimmingCharacters(in: .whitespaces).isEmpty else{
                   return
               }
-        // result controller .update with result
-        print(query)
-        
-        // perform search api
-        
+        resultController.delegate = self
+        APIcaller.shared.Search(with: query) { response in
+            
+            DispatchQueue.main.async {
+                switch response{
+                case .success(let results):
+                    resultController.update(with:results)
+                case.failure(let error):
+                    print(error.localizedDescription)
+                    
+                }
 
+            }
+            
+        }
     }
+    
+    // call every time press kyeboard
+    func updateSearchResults(for searchController: UISearchController) {
+    
+        
+    }
+    
+}
+
+
+extension SearchViewController: SearchResultViewControlleDelegate {
+    func didTapResult(_ result: SearchResult) {
+    
+        switch result {
+            
+        case.artist(let model):
+            guard let url = URL(string: model.external_urls["spotify"] ?? "") else {
+                return
+            }
+            let vc = SFSafariViewController(url: url)
+            present(vc, animated: true)
+        case.track(let model):
+            break
+        case.album(let model):
+            let vc = AlbumViewController(album: model)
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+        case.playlist(let model):
+            let vc = PlayListViewController(playlist: model)
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+        }
+        
+    }
+    
     
 }
 
