@@ -68,6 +68,13 @@ class SearchViewController: UIViewController , UISearchResultsUpdating, UISearch
         collectionView.dataSource = self
         collectionView.backgroundColor = .systemBackground
         
+        fetchCategory()
+ 
+    
+        
+    }
+    
+    private func fetchCategory(){
         
         APIcaller.shared.GetAllCategory { [weak self] result in
             
@@ -84,7 +91,6 @@ class SearchViewController: UIViewController , UISearchResultsUpdating, UISearch
                 }
             }
         }
-    
         
     }
     
@@ -139,7 +145,7 @@ extension SearchViewController: SearchResultViewControlleDelegate {
             let vc = SFSafariViewController(url: url)
             present(vc, animated: true)
         case.track(let model):
-            break
+            PlayBackPresenter.shared.StartPlayBack(from: self, track: model)
         case.album(let model):
             let vc = AlbumViewController(album: model)
             vc.navigationItem.largeTitleDisplayMode = .never

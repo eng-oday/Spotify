@@ -262,7 +262,6 @@ final class APIcaller {
                 switch result{
                 case .success(let data):
                     let playlist =  data.playlists.items
-                    print(playlist)
                     completion(.success(playlist))
                 case.failure(let error):
                     completion(.failure(error))

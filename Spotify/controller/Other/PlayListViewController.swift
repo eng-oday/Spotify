@@ -48,6 +48,9 @@ class PlayListViewController: UIViewController {
     
     
     private let playList:PlayList
+    private var viewModel = [RecommentedTracksCellViewModel]()
+    private var headerViewModel = [PlayListHeaderViewModel]()
+    private var track = [AudioTracks]()
     
     init(playlist:PlayList) {
         self.playList = playlist
@@ -83,9 +86,7 @@ class PlayListViewController: UIViewController {
 
     }
     
-    private var viewModel = [RecommentedTracksCellViewModel]()
-    private var headerViewModel = [PlayListHeaderViewModel]()
-    
+  
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         CollectionView.frame = view.bounds
@@ -100,6 +101,8 @@ class PlayListViewController: UIViewController {
             DispatchQueue.main.async {
                 switch data{
                 case .success(let data):
+                    
+                    self?.track = data.tracks.items.compactMap({$0.track})
                     self?.viewModel = data.tracks.items.compactMap({
                         
                         return RecommentedTracksCellViewModel(trackImage: URL(string: $0.track.album?.images.first?.url ?? ""),
@@ -189,6 +192,15 @@ extension PlayListViewController: UICollectionViewDelegate,UICollectionViewDataS
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         
+        // play song
+        let index = indexPath.row
+        let track = track[index]
+        
+        DispatchQueue.main.async {
+            PlayBackPresenter.shared.StartPlayBack(from: self, track: track)
+
+        }
+        
     }
     
     
@@ -199,7 +211,12 @@ extension PlayListViewController:PlayListHeaderCollectionReusableViewDelegate{
     func PlayListHeaderCollectionReusableViewDidTapPlayAll(_ header: PlayListHeaderCollectionReusableView) {
         
         // start play list in queue
-        print("we are heeeeereeee")
+        
+        DispatchQueue.main.async {
+            PlayBackPresenter.shared.StartPlayBack(from: self, tracks: self.track)
+        }
+       
+
     }
     
     

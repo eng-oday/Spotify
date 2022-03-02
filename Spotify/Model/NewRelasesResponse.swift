@@ -21,7 +21,7 @@ struct Album:Codable{
     let name:String
     let artists: [Artist]
     let id:String
-    let images:[ApiImage]
+    var images:[ApiImage]
     let release_date:String
     let total_tracks:Int
 }

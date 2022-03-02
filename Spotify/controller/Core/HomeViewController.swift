@@ -298,7 +298,12 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
             navigationController?.pushViewController(vc, animated: true)
            
         case .RecommendedTracks:
-            break
+            let track = tracks[indexPath.row]
+            
+            DispatchQueue.main.sync {
+                PlayBackPresenter.shared.StartPlayBack(from: self, track: track)
+            }
+        
             
         }
         
