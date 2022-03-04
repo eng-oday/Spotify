@@ -50,7 +50,7 @@ class PlayListViewController: UIViewController {
     private let playList:PlayList
     private var viewModel = [RecommentedTracksCellViewModel]()
     private var headerViewModel = [PlayListHeaderViewModel]()
-    private var track = [AudioTracks]()
+    private var tracks = [AudioTracks]()
     
     init(playlist:PlayList) {
         self.playList = playlist
@@ -102,7 +102,7 @@ class PlayListViewController: UIViewController {
                 switch data{
                 case .success(let data):
                     
-                    self?.track = data.tracks.items.compactMap({$0.track})
+                    self?.tracks = data.tracks.items.compactMap({$0.track})
                     self?.viewModel = data.tracks.items.compactMap({
                         
                         return RecommentedTracksCellViewModel(trackImage: URL(string: $0.track.album?.images.first?.url ?? ""),
@@ -194,12 +194,11 @@ extension PlayListViewController: UICollectionViewDelegate,UICollectionViewDataS
         
         // play song
         let index = indexPath.row
-        let track = track[index]
+        let track = tracks[index]
         
-        DispatchQueue.main.async {
             PlayBackPresenter.shared.StartPlayBack(from: self, track: track)
 
-        }
+      
         
     }
     
@@ -211,12 +210,9 @@ extension PlayListViewController:PlayListHeaderCollectionReusableViewDelegate{
     func PlayListHeaderCollectionReusableViewDidTapPlayAll(_ header: PlayListHeaderCollectionReusableView) {
         
         // start play list in queue
-        
-        DispatchQueue.main.async {
-            PlayBackPresenter.shared.StartPlayBack(from: self, tracks: self.track)
-        }
-       
-
+      
+            PlayBackPresenter.shared.StartPlayBack(from: self, tracks: self.tracks)
+     
     }
     
     

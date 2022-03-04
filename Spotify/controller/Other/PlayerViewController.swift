@@ -21,10 +21,10 @@ protocol PlayerDataSource: AnyObject {
 protocol PlayerViewControllerDelegate : AnyObject{
     
     
-    func didTapPlayPause()
-    func didTapNext()
-    func didTapBackward()
-    func didSlideSlider(_ value:Float)
+    func didTapPlayPauseBtn()
+    func didTapNextBtn()
+    func didTapBackwardBtn()
+    func didSlideSliderBtn(_ value:Float)
     
 }
 
@@ -98,7 +98,7 @@ class PlayerViewController: UIViewController {
         // close songs and resest play list and dismiss vc
         dismiss(animated: true)
         PlayBackPresenter.shared.playerQueue?.removeAllItems()
-        PlayBackPresenter.shared.index = 0
+     PlayBackPresenter.shared.index = 0
         PlayBackPresenter.shared.player?.replaceCurrentItem(with: nil)
         
         
@@ -130,20 +130,23 @@ extension PlayerViewController: PlayerControlsViewDelegate {
     func PlayerControlView(_ PlayerControlsView: PlayerControlsView, didSlideSlider value: Float) {
         
         // bbl8 ana b protocol tani el presenter nafz el func ele 3andk el te5os el button dah w lw feh value bb3tha
-        delegate?.didSlideSlider(value)
+        delegate?.didSlideSliderBtn(value)
     }
     
     func PlayerControlViewDidTapPlayPauseButton(_ PlayerControlsView: PlayerControlsView) {
-        delegate?.didTapPlayPause()
+        // lma ana etbl8t fel protocol da en eluser das 3la button bta3 el play and pause
+        
+        // ana mn hena b2a bl8t el presenter eno etdas 3la el button fa nafz el func bta3t el pause and play
+        delegate?.didTapPlayPauseBtn()
     
     }
     
     func PlayerControlViewDidTapNextButton(_ PlayerControlsView: PlayerControlsView) {
-        delegate?.didTapNext()
+        delegate?.didTapNextBtn()
     }
     
     func PlayerControlViewDidTapBackButton(_ PlayerControlsView: PlayerControlsView) {
-        delegate?.didTapBackward()
+        delegate?.didTapBackwardBtn()
     }
     
     

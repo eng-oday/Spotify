@@ -156,8 +156,6 @@ final class PlayerControlsView :UIView{
         nextButton.frame = CGRect(x: playPauseButton.right+80, y: playPauseButton.top, width: buttonSize, height: buttonSize)
 
 
-
-        
     }
     
     func configure (with viewModel: PlayerControlsViewModel){

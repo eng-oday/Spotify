@@ -177,6 +177,7 @@ extension AlbumViewController: UICollectionViewDelegate,UICollectionViewDataSour
         let index = indexPath.row
         var track = tracks[index]
         track.album = self.album
+    
         PlayBackPresenter.shared.StartPlayBack(from: self, track: track)
 
     }

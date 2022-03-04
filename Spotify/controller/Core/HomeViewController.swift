@@ -299,10 +299,8 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
            
         case .RecommendedTracks:
             let track = tracks[indexPath.row]
+             PlayBackPresenter.shared.StartPlayBack(from: self, track: track)
             
-            DispatchQueue.main.sync {
-                PlayBackPresenter.shared.StartPlayBack(from: self, track: track)
-            }
         
             
         }
